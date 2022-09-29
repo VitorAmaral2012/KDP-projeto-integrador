@@ -10,10 +10,10 @@ unsigned long Current_motor_timer;
 #define PServo2 3
 #define PServo3 4
 #define MOTOR 5
-#define SensorMotor 14
-#define SensorVermelho 15
-#define SensorVerde 17
-#define SensorAzul 16
+#define SensorMotor 31
+#define SensorVermelho 33
+#define SensorVerde 30
+#define SensorAzul 32
 
 #define BlueANGMAX 180
 #define BlueANGMED 145
@@ -161,8 +161,8 @@ const char senha_62[] PROGMEM = "D3201";
 const char senha_63[] PROGMEM = "D6B5#";
 const char *const Senhas[] PROGMEM = {senha_0,senha_1,senha_2,senha_3,senha_4,senha_5,senha_6,senha_7,senha_8,senha_9,senha_10,senha_11,senha_12,senha_13,senha_14,senha_15,senha_16,senha_17,senha_18,senha_19,senha_20,senha_21,senha_22,senha_23,senha_24,senha_25,senha_26,senha_27,senha_28,senha_29,senha_30,senha_31,senha_32,senha_33,senha_34,senha_35,senha_36,senha_37,senha_38,senha_39,senha_40,senha_41,senha_42,senha_43,senha_44,senha_45,senha_46,senha_47,senha_48,senha_49,senha_50,senha_51,senha_52,senha_53,senha_54,senha_55,senha_56,senha_57,senha_58,senha_59,senha_60,senha_61,senha_62,senha_63};
 
-byte Colum[4] = {13, 12, 11, 10};
-byte Linha[4] = {9, 8, 7, 6};
+byte Colum[4] = {50, 48, 46, 44};
+byte Linha[4] = {42, 40, 38, 36};
 char Teclado[4][4] = {  {'1', '2', '3', 'A'},
   {'4', '5', '6', 'B'},
   {'7', '8', '9', 'C'},
