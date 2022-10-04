@@ -16,13 +16,14 @@ unsigned long Current_motor_timer;
 #define SensorAzul 32
 
 #define BlueANGMAX 180
-#define BlueANGMED 145
+
 #define BlueANGMIN 110
-#define GreenANGMIN 0 //70
-#define GreenANGMED 35
-#define GreenANGMAX 70
+
+#define GreenANGMIN 120 
+#define GreenANGMAX 180
+
 #define RedANGMIN 40
-#define RedANGMED 75
+
 #define RedANGMAX 110
 
 Servo servos[4];
