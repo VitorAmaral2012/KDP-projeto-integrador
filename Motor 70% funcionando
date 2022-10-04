@@ -433,9 +433,7 @@ void loop() {
       c = pedido();
       if(c!='x'){
         enviarPedido(c);
-        delay(3000);
-       ChangePage(5);
-       delay(5000);
+        delay(1000);
       }
     }
     ChangePage(0);
