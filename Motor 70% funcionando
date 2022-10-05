@@ -28,6 +28,7 @@ unsigned long Current_motor_timer;
 
 Servo servos[4];
 
+bool pegoukit[65];
 
 const char string_0[] PROGMEM = "#B41#";
 const char string_1[] PROGMEM = "0#097";
@@ -172,7 +173,7 @@ char Teclado[4][4] = {  {'1', '2', '3', 'A'},
 Keypad KeyPad = Keypad(makeKeymap(Teclado), Colum, Linha, 4, 4);
 
 
-
+int contador;
 void setup(){
   Serial.begin(9600);
   delay(2000);
@@ -197,6 +198,10 @@ void setup(){
   pinMode(SensorVerde, INPUT);
   pinMode(SensorVermelho, INPUT);
   pinMode(SensorAzul, INPUT);
+
+  for(contador=0;contador<=64;contador++){
+    pegoukit[contador]=true;
+    }
   }
 
 
@@ -251,10 +256,10 @@ void StartProgma() {
 }
 
 
-void LigarEsteira(){
+void LigarEsteira(int timer){
   Start_motor_timer = millis();
   digitalWrite(MOTOR, HIGH);
-  while (digitalRead(SensorMotor) &&  Current_motor_timer <= Start_motor_timer + 6000) {
+  while (digitalRead(SensorMotor) &&  Current_motor_timer <= Start_motor_timer + timer) {
     Current_motor_timer = millis();
   }
   digitalWrite(MOTOR, LOW);
@@ -299,9 +304,14 @@ char buffer[10];
 
 bool verificao(int ID,String Ra,String Sa){
     if(ID!=-1){
+      if(pegoukit[ID]){
       if( pegarRA(ID).equals(Ra) && pegarSenha(ID).equals(Sa) ){
+        pegoukit[ID]=false;
         return true;
-      }
+      }}else{
+        ChangePage(5);
+        delay(3000);
+        }
   }
   return false;
 }
@@ -350,18 +360,16 @@ char pedido(){
      ChangePage(3);
      char P = KeyPad.waitForKey();
      if(P!='D'){
-       String Palavra = "\"Comfirmar Combo "+String(P)+"\"";
+      if(P=='A'){ Serial.print("page4.p1.pic=6"); Serial.write(0xff);Serial.write(0xff);Serial.write(0xff);}//azul
+      if(P=='B'){ Serial.print("page4.p1.pic=8"); Serial.write(0xff);Serial.write(0xff);Serial.write(0xff);}//vermelho
+      if(P=='C'){ Serial.print("page4.p1.pic=7"); Serial.write(0xff);Serial.write(0xff);Serial.write(0xff);}//verde
     
-       ChangePage(4);
-       Serial.print("page4.t0.txt="+Palavra);
-          Serial.write(0xff);
-        Serial.write(0xff);
-        Serial.write(0xff);
+     
+      ChangePage(4);
       char N = KeyPad.waitForKey();
       if(N=='A'){
         return P;
       }
-     
      }else{
      return 'x';
      }
@@ -378,7 +386,7 @@ void enviarPedido(char chave){
     delay(1500);
     LigarServo(0, BlueANGMAX, BlueANGMIN);
      delay(50);
-    LigarEsteira();
+    LigarEsteira(1000);
     }
    
   }
@@ -389,8 +397,8 @@ void enviarPedido(char chave){
     LigarServo(1, GreenANGMAX, GreenANGMIN);
     delay(1500);
     LigarServo(1, GreenANGMAX, GreenANGMIN);
-      delay(50);
-    LigarEsteira();
+    delay(50);
+    LigarEsteira(3000);
     }
    
   }
@@ -403,10 +411,10 @@ void enviarPedido(char chave){
     delay(1500);
     LigarServo(2, RedANGMAX, RedANGMIN);
       delay(50);
-    LigarEsteira();}
+    LigarEsteira(2000);}
    
   }
-  
+   ChangePage(0);
   }
 
 
@@ -437,6 +445,6 @@ void loop() {
       }
     }
     ChangePage(0);
-     delay(500);
+    delay(500);
    
 }
