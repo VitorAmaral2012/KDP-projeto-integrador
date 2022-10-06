@@ -19,8 +19,8 @@ unsigned long Current_motor_timer;
 
 #define BlueANGMIN 110
 
-#define GreenANGMIN 120
-#define GreenANGMAX 180
+#define GreenANGMIN 40
+#define GreenANGMAX 100
 
 #define RedANGMIN 40
 
