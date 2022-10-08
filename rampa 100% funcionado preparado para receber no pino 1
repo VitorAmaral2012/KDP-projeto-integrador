@@ -175,7 +175,7 @@ Keypad KeyPad = Keypad(makeKeymap(Teclado), Colum, Linha, 4, 4);
 
 int contador;
 void setup() {
-  Serial1.begin(9600);
+  Serial3.begin(9600);
   delay(2000);
   pinMode(MOTOR, OUTPUT);
   digitalWrite(MOTOR, LOW);
@@ -208,16 +208,16 @@ void setup() {
 void  LigarServo(int Set, int AnguloFinal, int AnguloDeParada) {
 
   int i;
-  Serial1.println(servos[Set].read());
+  Serial3.println(servos[Set].read());
   if (AnguloFinal > servos[Set].read()) {
-    Serial1.println("UP");
+    Serial3.println("UP");
     for (i = servos[Set].read(); i <= AnguloFinal; i += 5) {
       servos[Set].write(i);
       delay(20);
     }
 
   } else {
-    Serial1.println("Down");
+    Serial3.println("Down");
     for (i = servos[Set].read(); i >= AnguloDeParada; i -= 5) {
       servos[Set].write(i);
       delay(20);
@@ -229,10 +229,8 @@ void  LigarServo(int Set, int AnguloFinal, int AnguloDeParada) {
 bool printSensor(int PIN, String cor) {
   delay(50);
   if (digitalRead(PIN) == 1) {
-    Serial1.println(cor + " OK");
     return false;
   }
-  Serial1.println(cor + " OFF");
   return true;
 
 }
@@ -241,7 +239,7 @@ void StartProgma() {
   Start_program_timer = millis();
   if (Start_program_timer < 1500) {
 
-    Serial1.println("Coloque os 3 kits iniciais:");
+    Serial3.println("Coloque os 3 kits iniciais:");
 
     do {
       printSensor(SensorVermelho, "Red");
@@ -250,7 +248,7 @@ void StartProgma() {
       delay(100);
       printSensor(SensorAzul, "Blue");
       delay(1000);
-      Serial1.println("----------------------");
+      Serial3.println("----------------------");
     } while (digitalRead(SensorVermelho) || digitalRead(SensorVerde) ||  digitalRead(SensorVermelho));
   }
 }
@@ -273,18 +271,18 @@ String InserirNoTeclado(String Componente, int Tam) {
     if (chave == '*') {
       if (Conteudo.length() != 0) {
         Conteudo.remove(Conteudo.length() - 1);
-        Serial1.print(Componente + "=" + "\"" + Conteudo + "\"" );
-        Serial1.write(0xff);
-        Serial1.write(0xff);
-        Serial1.write(0xff);
+        Serial3.print(Componente + "=" + "\"" + Conteudo + "\"" );
+        Serial3.write(0xff);
+        Serial3.write(0xff);
+        Serial3.write(0xff);
       }
 
     } else {
       Conteudo.concat(chave);
-      Serial1.print(Componente + "=" + "\"" + Conteudo + "\"" );
-      Serial1.write(0xff);
-      Serial1.write(0xff);
-      Serial1.write(0xff);
+      Serial3.print(Componente + "=" + "\"" + Conteudo + "\"" );
+      Serial3.write(0xff);
+      Serial3.write(0xff);
+      Serial3.write(0xff);
     }
 
 
@@ -294,10 +292,10 @@ String InserirNoTeclado(String Componente, int Tam) {
 }
 
 void ChangePage(int n) {
-  Serial1.print("page " + String(n));
-  Serial1.write(0xff);
-  Serial1.write(0xff);
-  Serial1.write(0xff);
+  Serial3.print("page " + String(n));
+  Serial3.write(0xff);
+  Serial3.write(0xff);
+  Serial3.write(0xff);
 }
 
 
@@ -359,34 +357,65 @@ int BuscaBinaria(String RA) {
 
 char pedido() {
   for (;;) {
+     if(printSensor(SensorAzul, "Blue")==false){
+       Serial3.print("page3.t0.txt=\"XXX\"");  //azul
+        Serial3.write(0xff);
+        Serial3.write(0xff);
+        Serial3.write(0xff);
+     }
+     if(printSensor(SensorVerde, "Green")==false){
+       Serial3.print("page3.t1.txt=\"XXX\"");  //azul
+        Serial3.write(0xff);
+        Serial3.write(0xff);
+        Serial3.write(0xff);
+      }
+     if(printSensor(SensorVermelho, "Red")==false){
+        Serial3.print("page3.t2.txt=\"XXX\"");  //azul
+        Serial3.write(0xff);
+        Serial3.write(0xff);
+        Serial3.write(0xff);
+      }
+     
     ChangePage(3);
     char P = KeyPad.waitForKey();
     if (P != 'D') {
-      if (P == 'A') {
-        Serial1.print("page4.p1.pic=6");  //azul
-        Serial1.write(0xff);
-        Serial1.write(0xff);
-        Serial1.write(0xff);
+      if (P == 'A' && printSensor(SensorAzul, "Blue")) {
+        Serial3.print("page4.p1.pic=6");  //azul
+        Serial3.write(0xff);
+        Serial3.write(0xff);
+        Serial3.write(0xff);
+        ChangePage(4);
+        char N = KeyPad.waitForKey();
+        if (N == 'A') {
+         return P;
+       }
+        
       }
-      if (P == 'B') {
-        Serial1.print("page4.p1.pic=8");  //vermelho
-        Serial1.write(0xff);
-        Serial1.write(0xff);
-        Serial1.write(0xff);
+      if (P == 'B' && printSensor(SensorVerde, "Green")) {
+        Serial3.print("page4.p1.pic=8");  //vermelho
+        Serial3.write(0xff);
+        Serial3.write(0xff);
+        Serial3.write(0xff);
+        ChangePage(4);
+        char N = KeyPad.waitForKey();
+        if (N == 'A') {
+         return P;
+        }
       }
-      if (P == 'C') {
-        Serial1.print("page4.p1.pic=7");  //verde
-        Serial1.write(0xff);
-        Serial1.write(0xff);
-        Serial1.write(0xff);
+      if (P == 'C' && printSensor(SensorVermelho, "Red")) {
+        Serial3.print("page4.p1.pic=7");  //verde
+        Serial3.write(0xff);
+        Serial3.write(0xff);
+        Serial3.write(0xff);
+        ChangePage(4);
+        char N = KeyPad.waitForKey();
+        if (N == 'A') {
+          return P;
+        }
       }
 
 
-      ChangePage(4);
-      char N = KeyPad.waitForKey();
-      if (N == 'A') {
-        return P;
-      }
+      
     } else {
       return 'x';
     }
@@ -396,7 +425,7 @@ char pedido() {
 
 void enviarPedido(char chave) {
   if (chave == 'A' ) {
-    Serial1.println("A");
+    Serial3.println("A");
     if (printSensor(SensorAzul, "Blue")) {
       delay(50);
       LigarServo(0, BlueANGMAX, BlueANGMIN);
@@ -409,7 +438,7 @@ void enviarPedido(char chave) {
   }
   if (chave == 'C') {
     if ( printSensor(SensorVerde, "Green")) {
-      Serial1.println("C");
+      Serial3.println("C");
       delay(50);
       LigarServo(1, GreenANGMAX, GreenANGMIN);
       delay(1500);
@@ -422,7 +451,7 @@ void enviarPedido(char chave) {
 
   if (chave == 'B') {
     if (printSensor(SensorVermelho, "Red")) {
-      Serial1.println("B");
+      Serial3.println("B");
       delay(50);
       LigarServo(2, RedANGMAX, RedANGMIN);
       delay(1500);
