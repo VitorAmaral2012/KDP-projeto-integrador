@@ -29,6 +29,7 @@ unsigned long Current_motor_timer;
 Servo servos[4];
 
 bool pegoukit[65];
+bool EsteiraLig = false;
 
 const char string_0[] PROGMEM = "#B41#";
 const char string_1[] PROGMEM = "0#097";
@@ -206,7 +207,7 @@ void setup() {
 }
 void imprimirEstadoDosSensores(){
 
-        Serial.print(digitalRead(SensorMotor)); 
+        Serial.print(EsteiraLig); 
         Serial.print(digitalRead(SensorVermelho));
         Serial.print(digitalRead(SensorVerde));
         Serial.print(digitalRead(SensorAzul));
@@ -269,11 +270,13 @@ void StartProgma() {
 void LigarEsteira(int timer) {
   Start_motor_timer = millis();
   digitalWrite(MOTOR, HIGH);
+  EsteiraLig = true;
   while (digitalRead(SensorMotor) &&  Current_motor_timer <= Start_motor_timer + timer) {
     Current_motor_timer = millis();
     delay(10);
     imprimirEstadoDosSensores();
   }
+  EsteiraLig = false;
   digitalWrite(MOTOR, LOW);
 }
 
@@ -504,6 +507,7 @@ void loop() {
   delay(500);
   imprimirEstadoDosSensores();
   KeyPad.waitForKey();
+  imprimirEstadoDosSensores();
   ChangePage(1);
   RA =  InserirNoTeclado("page1.t0.txt", 5);
   delay(500);
